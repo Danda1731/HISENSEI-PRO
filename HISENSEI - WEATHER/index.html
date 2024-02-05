@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>H!SENSEI WEATHER</title>
+</head>
+<body>
+    <div class="card">
+        <div class="search">
+            <input type="text" placeholder="Telusuri cuaca wilayah sekitar." spellcheck="false">
+            <button><img src="Images/search.png"></button>
+        </div>
+        <div class="error">
+            <p>Silahkan coba lagi dengan kata kunci yang benar.</p>
+        </div>
+     <div class="weather">
+        <img src="Images/Hujan.png" alt="Hujan" class="weather-icon">
+        <h1 class="temp">22°C</h1>
+        <h2 class="city">New York</h2>
+        <div class="details">
+            <div class="col">
+                <img src="Images/Kelembapan.png" alt="">
+                <div>
+                    <p class="humidity">50%</p>
+                    <p>KELEMBAPAN</p>
+                </div>
+            </div>
+            <div class="col">
+                <img src="Images/Tekanan.png" alt="">
+                <div>
+                    <p class="wind">50 km/h</p>
+                    <p>LAJU ANGIN</p>
+                </div>
+            </div>
+        </div>
+     </div>
+    </div>
+
+    <script>
+       const apiKey = "859a50b399a5cdd9a5ad16eb5c2f0947";
+       const apiUrl = "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
+       const searchBox = document.querySelector(".search input");
+       const searchBtn = document.querySelector(".search button");
+       const weatherIcon = document.querySelector(".weather-icon");
+
+
+       async function checkWeather(city){
+        const response = await fetch(apiUrl + city + `&appid=${apiKey}`);
+
+        if(response.status == 404){
+            document.querySelector(".error").style.display = "block";
+        }else{
+
+        var data = await response.json();
+
+        console.log(data);
+
+        document.querySelector(".city").innerHTML = data.name;
+        document.querySelector(".temp").innerHTML = Math.round(data.main.temp) + "°C";
+        document.querySelector(".humidity").innerHTML = data.main.humidity + "%";
+        document.querySelector(".wind").innerHTML = data.wind.speed + " Km/h";
+
+        if(data.weather[0].main == "Clouds"){
+            weatherIcon.src = "images/Berawan.png";
+        }
+        else if(data.weather[0].main == "Clear"){
+            weatherIcon.src = "images/Cerah.png";
+        }
+        else if(data.weather[0].main == "Rain"){
+            weatherIcon.src = "images/Hujan.png";
+        }
+        else if(data.weather[0].main == "Storm"){
+            weatherIcon.src = "images/HujanLebat.png";
+        }
+        else if(data.weather[0].main == "Mist"){
+            weatherIcon.src = "images/CerahBerawan.png";
+        }
+        else if(data.weather[0].main == "Snow"){
+            weatherIcon.src = "images/Salju.png";
+        }
+
+
+        document.querySelector(".error").style.display = "none";
+        document.querySelector(".weather").style.display = "block";
+        }
+       }
+
+       searchBtn.addEventListener("click", ()=>{
+        checkWeather(searchBox.value);
+       })
+       
+    </script>
+</body>
+</html>
